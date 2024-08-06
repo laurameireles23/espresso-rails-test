@@ -10,6 +10,60 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 2024_08_06_063813) do
 
+  create_table "attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "file"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "statement_id"
+    t.index ["statement_id"], name: "index_attachments_on_statement_id"
+  end
+
+  create_table "cards", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "last4"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_id"
+    t.bigint "user_id"
+    t.index ["company_id"], name: "index_cards_on_company_id"
+    t.index ["user_id"], name: "index_cards_on_user_id"
+  end
+
+  create_table "companies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "name"
+    t.string "cnpj"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "statements", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "status"
+    t.string "category"
+    t.string "merchant"
+    t.string "cost"
+    t.string "last4"
+    t.datetime "performed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "card_id"
+    t.index ["card_id"], name: "index_statements_on_card_id"
+  end
+
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
+    t.string "password"
+    t.boolean "is_admin", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "company_id"
+    t.index ["company_id"], name: "index_users_on_company_id"
+  end
+
+  add_foreign_key "attachments", "statements"
+  add_foreign_key "cards", "companies"
+  add_foreign_key "cards", "users"
+  add_foreign_key "statements", "cards"
+  add_foreign_key "users", "companies"
 end
